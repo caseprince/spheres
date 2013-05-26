@@ -1,0 +1,419 @@
+{
+    "config":  {
+        "imgPath":"img\/"
+    },
+    "spheres": [
+        {   "title":"3 Ball",
+            "src":"3ball.png",
+            "d":5.7,
+            "w":164
+        },
+        {   "title":"Acrylic",
+            "src":"acrylic.png",
+            "d":5,
+            "w":80
+        },
+        {   "title":"Black and white spriped marble",
+            "src":"b&w_marble_striped.png",
+            "d":15.1,
+            "w":4898.8
+        },
+        {   "title":"Black and white Marble",
+            "src":"b&w_marble.png",
+            "d":5.15,
+            "w":190
+        },
+        {   "title":"BB",
+            "src":"bb1.png",
+            "d":0.6,
+            "w":1
+        },
+        {   "title":"BB",
+            "src":"bb2.png",
+            "d":0.6,
+            "w":1
+        },
+        {   "title":"Bouncy Blue Glitter Ball",
+            "src":"blue_glitter.png",
+            "d":10,
+            "w":480
+        },
+        {   "title":"Blue Plastic",
+            "src":"blue_plastic.png",
+            "d":4.65,
+            "w":26
+        },
+        {   "title":"Small Blue",
+            "src":"blue_sm.png",
+            "d":2,
+            "w":4
+        },
+        {   "title":"Bone?",
+            "src":"bone.png",
+            "d":12.8,
+            "w":351.4
+        },
+        {   "title":"Bouncy Two Tone",
+            "src":"bouncy_2tone.png",
+            "d":4.6,
+            "w":48
+        },
+        {   "title":"Brown Paper Mache",
+            "src":"brown_paper.png",
+            "d":10.4,
+            "w":99
+        },
+        {   "title":"Canon Ball",
+            "src":"canon.png",
+            "d":11.4,
+            "w":5326.64
+        },
+        {   "title":"Zebra print Cat Toy",
+            "src":"cat_toy_zebra.png",
+            "d":3.8,
+            "w":15
+        },
+        {   "title":"Small Chrome",
+            "src":"chrome_sm.png",
+            "d":7.6,
+            "w":79
+        },
+        {   "title":"Coral Marble",
+            "src":"coral_marble.png",
+            "d":4.6,
+            "w":139
+        },
+        {   "title":"Cricket Ball",
+            "src":"cricket.png",
+            "d":6.9,
+            "w":139
+        },
+        {   "title":"Cue Ball",
+            "src":"cue.png",
+            "d":5.7,
+            "w":120
+        },
+        {   "title":"Med Disco",
+            "src":"disco_lg.png",
+            "d":7.7,
+            "w":63
+        },
+        {   "title":"Sm Disco",
+            "src":"disco_sm.png",
+            "d":5.65,
+            "w":32
+        },
+        {   "title":"Felt",
+            "src":"felt.png",
+            "d":3.5,
+            "w":5
+        },
+        {   "title":"Float",
+            "src":"float.png",
+            "d":19.6,
+            "w":1279
+        },
+        {   "title":"Geode",
+            "src":"geode.png",
+            "d":8.75,
+            "w":643
+        },
+        {   "title":"Glass Art Cells",
+            "src":"glass_cells.png",
+            "d":5.85,
+            "w":237
+        },
+        {   "title":"Glass Art Square Spiral",
+            "src":"glass_square_spiral.png",
+            "d":4.4,
+            "w":101
+        },
+        {   "title":"Glass",
+            "src":"glass.png",
+            "d":9.8,
+            "w":326
+        },
+        {   "title":"Green Stone 2",
+            "src":"green_stone_2.png",
+            "d":4.82,
+            "w":168
+        },
+        {   "title":"Green Stone Small",
+            "src":"green_stone_sm.png",
+            "d":2.55,
+            "w":24
+        },
+        {   "title":"Green Stone",
+            "src":"green_stone.png",
+            "d":5,
+            "w":172
+        },
+        {   "title":"Green Stripes",
+            "src":"green_stripes.png",
+            "d":8.65,
+            "w":221
+        },
+        {   "title":"Indian Star Garnet",
+            "src":"indian_star_garnet.png",
+            "d":7.81,
+            "w":1063
+        },
+        {   "title":"Japanese Bull",
+            "src":"japanese_cow.png",
+            "d":5,
+            "w":12
+        },
+        {   "title":"Lacrosse",
+            "src":"lacrosse.png",
+            "d":6.25,
+            "w":153
+        },
+        {   "title":"Lacy Black Stone",
+            "src":"lacy_black_stone.png",
+            "d":4,
+            "w":93
+        },
+        {   "title":"Large Steel Ball Bearing",
+            "src":"lg_steel_bb.png",
+            "d":8.25,
+            "w":2256
+        },
+        {   "title":"Black Marble, MS ",
+            "src":"marble_black_m.png",
+            "d":2.45,
+            "w":20
+        },
+        {   "title":"Black Marble, S",
+            "src":"marble_black_sm.png",
+            "d":1.5,
+            "w":4
+        },
+        {   "title":"Black & Yellow Marble, S",
+            "src":"marble_black_yellow.png",
+            "d":1.6,
+            "w":5
+        },
+        {   "title":"Clear Small Marble",
+            "src":"marble_clear_sm.png",
+            "d":1.4,
+            "w":4
+        },
+        {   "title":"Green Iridescent Marble",
+            "src":"marble_green_irid.png",
+            "d":2.45,
+            "w":26
+        },
+        {   "title":"Green Marble, S",
+            "src":"marble_green_sm.png",
+            "d":2.45,
+            "w":20
+        },
+        {   "title":"Black Iridescent Marble, M",
+            "src":"marble_irid_black_2.png",
+            "d":2.9,
+            "w":34
+        },
+        {   "title":"Black Iridescent Marble, M 2",
+            "src":"marble_irid_black.png",
+            "d":2.9,
+            "w":34
+        },
+        {   "title":"Nemo Marble",
+            "src":"marble_nemo.png",
+            "d":3.08,
+            "w":39
+        },
+        {   "title":"Numbers",
+            "src":"marble_numbers.png",
+            "d":4.35,
+            "w":105
+        },
+        {   "title":"Orange Marble",
+            "src":"marble_orange.png",
+            "d":2.52,
+            "w":21
+        },
+        {   "title":"Reb Marble, S",
+            "src":"marble_red_sm.png",
+            "d":2.1,
+            "w":13
+        },
+        {   "title":"Red & Yellow Marble, L",
+            "src":"marble_ren-n-yellow.png",
+            "d":3.45,
+            "w":57
+        },
+        {   "title":"Salmon Catseye Marble",
+            "src":"marble_salmon.png",
+            "d":2.5,
+            "w":21
+        },
+        {   "title":"Red Spiral Marble",
+            "src":"marble_spiral.png",
+            "d":3.41,
+            "w":52
+        },
+        {   "title":"Blue & Yellow Marble",
+            "src":"marble_yellow_blue.png",
+            "d":2.9,
+            "w":33
+        },
+        {   "title":"Frosted Yellow Marble",
+            "src":"marble_yellow_frosted.png",
+            "d":2.5,
+            "w":20
+        },
+        {   "title":"White, Orange & Yellow Marble",
+            "src":"marble_yellow_orange_white.png",
+            "d":2.39,
+            "w":18
+        },
+        {   "title":"Red, Yellow & White Marble",
+            "src":"marble_yellow_red_white.png",
+            "d":1.58,
+            "w":5.2
+        },
+        {   "title":"Clear, White & Yellow Marble",
+            "src":"marble_yellow_white.png",
+            "d":2.25,
+            "w":15
+        },
+        {   "title":"Meditation Ball",
+            "src":"meditation.png",
+            "d":4.17,
+            "w":150
+        },
+        {   "title":"Burnt Sienna Agate",
+            "src":"orange__agate_2.png",
+            "d":3.85,
+            "w":78
+        },
+        {   "title":"Orange Agate",
+            "src":"orange__agate_2.png",
+            "d":4.55,
+            "w":127
+        },
+        {   "title":"Orange Ballpit Ball",
+            "src":"orange_ballpit.png",
+            "d":7.97,
+            "w":12
+        },
+        {   "title":"Painted Crackle Ceramic",
+            "src":"painted_ceramic.png",
+            "d":15.69,
+            "w":1297
+        },
+        {   "title":"Creme Paper Mache",
+            "src":"paper_cream.png",
+            "d":10.4,
+            "w":99
+        },
+        {   "title":"Plastic LED",
+            "src":"plastic_LED.png",
+            "d":25.5,
+            "w":293
+        },
+        {   "title":"Polo",
+            "src":"polo.png",
+            "d":7.92,
+            "w":115
+        },
+        {   "title":"Orange Stripes",
+            "src":"orange_stripes.png",
+            "d":8.65,
+            "w":221
+        },
+        {   "title":"Silver Foam",
+            "src":"silver_foam.png",
+            "d":14.75,
+            "w":24
+        },
+        {   "title":"Aboriginal",
+            "src":"spotted_camel.png",
+            "d":6.4,
+            "w":341
+        },
+        {   "title":"Spring Steel",
+            "src":"spring_steel.png",
+            "d":21.5,
+            "w":968
+        },
+        {   "title":"Six Red Marbles Ball",
+            "src":"SRM.png",
+            "d":6,
+            "w":23
+        },
+        {   "title":"Steel Ball Bearing, M",
+            "src":"steel_bb_med.png",
+            "d":1.59,
+            "w":17
+        },
+        {   "title":"TD Bank mini B-ball",
+            "src":"td_bank_bball.png",
+            "d":12.3,
+            "w":90
+        },
+        {   "title":"Tennis",
+            "src":"tennis.png",
+            "d":6.39,
+            "w":57
+        },
+        {   "title":"Tiger Eye",
+            "src":"tiger_eye.png",
+            "d":4.9,
+            "w":100
+        },
+        {   "title":"Tinfoil",
+            "src":"tinfoil.png",
+            "d":1.95,
+            "w":2
+        },
+        {   "title":"Volcanic, S",
+            "src":"volcanic_sm.png",
+            "d":5.51,
+            "w":53
+        },
+        {   "title":"Whisk",
+            "src":"whisk.png",
+            "d":5.3,
+            "w":16
+        },
+        {   "title":"Wood, XXL",
+            "src":"wood_lg.png",
+            "d":14.13,
+            "w":754
+        },
+        {   "title":"Wood & Resin",
+            "src":"wood_resin.png",
+            "d":10.53,
+            "w":176
+        },
+        {   "title":"Wood, S",
+            "src":"wood_sm.png",
+            "d":2.79,
+            "w":10
+        },
+        {   "title":"Xmas Green, S",
+            "src":"xmas_green.png",
+            "d":2.45,
+            "w":1
+        },
+        {   "title":"Xmas Red, S",
+            "src":"xmas_red.png",
+            "d":2.45,
+            "w":1
+        },
+        {   "title":"White, Yellow & Rust Marble",
+            "src":"yellow_marble.png",
+            "d":7.85,
+            "w":687
+        },
+        {   "title":"Yellow Trackball",
+            "src":"yellow_track.png",
+            "d":10.1,
+            "w":118
+        }
+        
+
+    ]
+}
