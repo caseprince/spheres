@@ -8,7 +8,7 @@ define(
 		return view.extend({
 
 			title: "Sine Grid",
-			
+
 			theta: 0,
 			theta2: 0,
 
@@ -21,7 +21,7 @@ define(
 				var sq = Math.floor(Math.sqrt(this.Spheres.length));
 				var row = 0;
 				var col = 0;
-				var spacing = 30;
+				var spacing = 39;
 
 				transitioning = true;
 
