@@ -16,6 +16,8 @@ define(
 
 			init: function(data, scene){
 
+				//console.log(scene);
+
 				//basic data
 				this.title = data.title;
 				this.src = data.src;
@@ -49,7 +51,7 @@ define(
 				collisionSphere.visible = false;
 				scene.add(collisionSphere);
 
-				console.log(collisionSphere);
+				//console.log(collisionSphere);
 
 				//Sphere.particle = particle;
 

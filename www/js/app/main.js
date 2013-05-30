@@ -14,56 +14,83 @@ define(
 
 	function($, Class, Sphere, THREE, Stats, TWEEN, View_1, View_sine, View_random, View_box2d) {
     //the jquery.alpha.js and jquery.beta.js plugins have been loaded.
-    $(function() {
+   // $(function() {
         //$('body').alpha().beta();
+       // console.log(Class);
 
-        var camera, scene, projector, raycaster, renderer, particle;
-        var INTERSECTED, FOCUSED;
+    var Main = {
 
-        var Spheres = [];
-        var Views = [];
-        var currentView = 0;
-        var activeSphere = 0;
+        camera: null, scene: null, projector: null, raycaster: null, renderer:null, particle: null,
+        INTERSECTED: null, 
+        FOCUSED: null,
 
-        initTHREEjs();
+        Spheres : [],
+        Views : [],
+        currentView : 0,
+        activeSphere : 0,
+        theta: 0,
 
-		$.getJSON('spheres.json', function(data) {
 
-			data.spheres.sort(function(a,b) { return parseFloat(b.d) - parseFloat(a.d); } );
+		b2_mouseX : 0, b2_mouseY : 0,
+		windowHalfX : window.innerWidth / 2,
+		windowHalfY : window.innerHeight / 2,
+		mouse: {x:0, y:0},
+		mouseX: 500, mouseY : 500,
 
-			$('h1').html(data.spheres.length + " Spheres!");
+        init: function(scene, Spheres){
+	        this.initTHREEjs();
 
-			$.each(data.spheres, function(key, sphereData) {
+	    	
 
-				sphereData.id = key;
-				sphereData.position = {x: 0, y: 0, z: 0};
+			var that = this;
+			$.getJSON('spheres.json', function(data) {
 
-				var s = new Sphere(sphereData, scene);
-				Spheres.push(s);
+				data.spheres.sort(function(a,b) { return parseFloat(b.d) - parseFloat(a.d); } );
+
+				$('h1').html(data.spheres.length + " Spheres!");
+
+				$.each(data.spheres, function(key, sphereData) {
+
+					sphereData.id = key;
+					sphereData.position = {x: 0, y: 0, z: 0};
+
+					that.addSphere(sphereData);
+
+					
+
+				});
+
+				that.makeViewMenu();
+				that.Views[that.currentView].intro();
+				that.animate();
 
 			});
+		},
 
-			makeViewMenu();
-			Views[currentView].intro();
-			animate();
+		addSphere: function(sphereData){
+			var s = new Sphere(sphereData, this.scene);
+			this.Spheres.push(s);
 
-		});
+			console.log(s);
+		},
 
-		function makeViewMenu() {
+		makeViewMenu: function() {
 
-			Views.push(new View_random(scene, Spheres));
-			Views.push(new View_1(scene, Spheres));
-			Views.push(new View_sine(scene, Spheres));
-			Views.push(new View_box2d(scene, Spheres));
+			var that = this;
 
-			console.log(scene);
+			this.Views.push(new View_random(that.scene, that.Spheres, this));
+			this.Views.push(new View_1(that.scene, that.Spheres, this));
+			this.Views.push(new View_sine(that.scene, that.Spheres, this));
+			this.Views.push(new View_box2d(that.scene, that.Spheres, this));
+
+			console.log(this.scene);
 
 			var ul = [];
-			for (i = 0; i < Views.length; i++) {
-				if(i == currentView){
-					ul.push('<li><a id="' + i + '" class="active">' + Views[i].title + '</a></li>');
+			for (i = 0; i < this.Views.length; i++) {
+				if(i == this.currentView){
+					ul.push('<li><a id="' + i + '" class="active">' + this.Views[i].title + '</a></li>');
 				}else{
-					ul.push('<li><a id="' + i + '">' + Views[i].title + '</a></li>');
+					ul.push('<li><a id="' + i + '">' + this.Views[i].title + '</a></li>');
 				}
 				
 			}
@@ -75,18 +102,20 @@ define(
 
 			$("ul.modes li a").click(function() {
 				//alert($(this).attr("id"));
-				showView($(this).attr("id"));
+				that.showView($(this).attr("id"));
 			});
 
-		}
+		}, 
 
-		function showView(id){
+		showView: function(id){
 
 			$("ul.modes a.active").removeClass("active");
 			$("ul.modes #"+id).addClass("active");
-			currentView = id;
-			Views[currentView].intro();
-		}
+			this.currentView = id;
+			this.Views[this.currentView].intro();
+
+			this.clearProps();
+		},
 
 		//console.log("class: "+THREE);
 		/*new TWEEN.Tween( particle.position )
@@ -94,79 +123,94 @@ define(
 					.to( { x: Math.random() * 4000 - 2000, y: Math.random() * 1000 - 500, z: Math.random() * 4000 - 2000 }, 10000 )
 					.start();*/
 
-		function initTHREEjs() {
+		initTHREEjs: function() {
 
-			container = $("#container");
+			this.container = $("#container");
 
-			camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 5000 );
+			this.camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, 1, 5000 );
 			//camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 10000 );
-			camera.position.z = 360;
+			this.camera.position.z = 360;
 
-			scene = new THREE.Scene();
+			this.scene = new THREE.Scene();
 				var ambientLight = new THREE.AmbientLight( 0x555555 );
-				scene.add( ambientLight );
+				this.scene.add( ambientLight );
 
-			projector = new THREE.Projector();
-			raycaster = new THREE.Raycaster();
+			this.projector = new THREE.Projector();
+			this.raycaster = new THREE.Raycaster();
 
-			renderer = new THREE.CanvasRenderer();
+			this.renderer = new THREE.CanvasRenderer();
 			//renderer = new THREE.WebGLRenderer();
-			renderer.setSize( window.innerWidth, window.innerHeight );
-			renderer.sortElements = true;
-			renderer.setClearColor( 0x000000, 0.25 );
-			container.append( renderer.domElement );
+			this.renderer.setSize( window.innerWidth, window.innerHeight );
+			this.renderer.sortElements = true;
+			this.renderer.setClearColor( 0x000000, 0.25 );
+			this.container.append( this.renderer.domElement );
 
-			stats = new Stats();
-			stats.domElement.style.position = 'absolute';
-			stats.domElement.style.bottom = '0px';
-			$('body').append( stats.domElement );
+			this.stats = new Stats();
+			this.stats.domElement.style.position = 'absolute';
+			this.stats.domElement.style.bottom = '0px';
+			$('body').append( this.stats.domElement );
 
-			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-			document.addEventListener( 'touchstart', onDocumentTouchStart, false );
-			document.addEventListener( 'touchmove', onDocumentTouchMove, false );
-			window.addEventListener( 'resize', onWindowResize, false );
+			//document.addEventListener( 'mousemove', this.onDocumentMouseMove, false );
+			document.onmousemove = function(event){
+				//alert("Moved! "+event.clientX);
+				Main.onDocumentMouseMove(event);
+			};
 
-			document.addEventListener( 'click', onDocumentClick, false );
+			document.addEventListener( 'touchstart', this.onDocumentTouchStart, false );
+			document.addEventListener( 'touchmove', this.onDocumentTouchMove, false );
+			window.addEventListener( 'resize', this.onWindowResize, false );
 
-		}
+			document.addEventListener( 'click', this.onDocumentClick, false );
 
-		function animate() {
+			//this.mouse = new THREE.Vector2();
+
+		},
+
+		animate: function() {
 			//if(active){
-				requestAnimationFrame( animate );
+				var that = this;
+				window.requestAnimationFrame( Main.animate );
 
 				//updateDragging();
 				//box2d();
-				//console.log(v1);	
+				//console.log(Main.Views[Main.currentView]);	
 				//v1.step();
-				Views[currentView].step();
+				//if(this.Views[this.currentView].step()){
+					Main.Views[Main.currentView].step();
+				//}
 
-				render();
-				stats.update();
+				//console.log(this);
+
+				Main.render();
+				Main.stats.update();
 				//world.DrawDebugData();
 
 			//}
-		}
+		},
 
-		var radius = 300, theta = 0;
-		var cameraFocus = {x:0, y:0, z:0};
-		function render() {
+		radius : 300, 
+		theta : 0,
+		cameraFocus : {x:0, y:0, z:0},
+
+		render: function() {
 
 			TWEEN.update();
 
-			theta += 0.4;
+			this.theta += 0.4;
 			//camera.position.x = radius * Math.sin( THREE.Math.degToRad( theta ) );
 			//camera.position.y = radius * .5 * Math.sin( THREE.Math.degToRad( theta ) );
 			//camera.position.z = radius * Math.cos( THREE.Math.degToRad( theta ) );
 
-			if(mouseX && mouseY){
-				camera.position.x += ( 0.5 * mouseX - camera.position.x ) * 0.05;
-				camera.position.y += ( -0.5 * mouseY - camera.position.y ) * 0.05;
+			//$("#debug").html("x"+this.mouseX);
+			if(this.mouseX && this.mouseY){
+				this.camera.position.x += ( 0.5 * this.mouseX - this.camera.position.x ) * 0.05;
+				this.camera.position.y += ( -0.5 * this.mouseY - this.camera.position.y ) * 0.05;
 				}
 			//camera.lookAt( scene.position );
-			camera.lookAt( cameraFocus );
-			hitTest();
+			this.camera.lookAt( this.cameraFocus );
+			this.hitTest();
 
-			for ( var i = 0; i < Spheres.length; i++ ) {
+			for ( var i = 0; i < this.Spheres.length; i++ ) {
 
 				/*if(i === 10){
 					//var projector = new THREE.Projector();
@@ -187,120 +231,103 @@ define(
 					//Spheres[i].collisionSphere.scale.x = Spheres[i].collisionSphere.scale.y = 10;
 				}*/
 
-				Spheres[i].particle.position = Spheres[i].collisionSphere.position;
+				this.Spheres[i].particle.position = this.Spheres[i].collisionSphere.position;
+				this.Spheres[i].particle.rotation = this.Spheres[i].collisionSphere.rotation;
 				//Spheres[i].particle.position.y = Spheres[i].collisionSphere.position.y;
 				//Spheres[i].particle.position.z = Spheres[i].collisionSphere.position.z;
 				//Spheres[i].particle.scale = Spheres[i].collisionSphere.scale;
 
 			}
 
-			renderer.render( scene, camera );
+			this.renderer.render( this.scene, this.camera );
 
-		}
+		},
 
-		function hitTest(){
+		hitTest: function(){
 			// find intersections
-			var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
-			projector.unprojectVector( vector, camera );
-			raycaster.set( camera.position, vector.sub( camera.position ).normalize() );
+			var vector = new THREE.Vector3( this.mouse.x, this.mouse.y, 1 );
+			this.projector.unprojectVector( vector, this.camera );
+			this.raycaster.set( this.camera.position, vector.sub( this.camera.position ).normalize() );
 
 			//var intersects = raycaster.intersectObjects( particles );
-			var intersects = raycaster.intersectObjects( scene.children );
+			var intersects = this.raycaster.intersectObjects( this.scene.children );
 
 			if ( intersects.length > 0 ) {
 				//console.log(intersects[0].object.id);
-				if ( INTERSECTED != intersects[ 0 ].object ) {
-					if(INTERSECTED !== null){
+				if ( this.INTERSECTED != intersects[ 0 ].object ) {
+					if(this.INTERSECTED !== null){
 						$("ul.spheres a").removeClass("active");
 						//INTERSECTED.visible = false;
 					}
-					INTERSECTED = intersects[0].object;
+					this.INTERSECTED = intersects[0].object;
 
-					if ( INTERSECTED && INTERSECTED.Sphere ){
+					if ( this.INTERSECTED && this.INTERSECTED.Sphere ){
 						//console.log(INTERSECTED.data);
 						//INTERSECTED.visible = true;
 
-						$("ul.spheres a#"+INTERSECTED.Sphere.id).addClass("active");
+						$("ul.spheres a#"+this.INTERSECTED.Sphere.id).addClass("active");
 
-						showTooltip(INTERSECTED);
-						FOCUSED = INTERSECTED;
+						this.showTooltip(this.INTERSECTED);
+						this.FOCUSED = this.INTERSECTED;
 					}
 				}
 			} else {
 
-				if(INTERSECTED !== null){
+				if(this.INTERSECTED !== null){
 					//INTERSECTED.visible = false;
 					$("ul.spheres a").removeClass("active");
-					INTERSECTED = null;
+					this.INTERSECTED = null;
 					//console.log("null");
 				}
 			}
 
-			if(FOCUSED){
-				positionTooltip(FOCUSED);
+			if(this.FOCUSED){
+				this.positionTooltip(this.FOCUSED);
 			}
-		}
+		},
 
-		function showTooltip(collisionSphere){
+		showTooltip: function(collisionSphere){
 
 			//console.log(collisionSphere);
 
 			$("#tooltip").html(collisionSphere.Sphere.title);
 			$("#tooltip").css({"display": "block"});
 
-			positionTooltip(collisionSphere);
+			this.positionTooltip(collisionSphere);
 
 			/*var x = collisionSphere.position.x;
 			var y = collisionSphere.position.y;
 			var z = collisionSphere.position.z;
 			new TWEEN.Tween( cameraFocus ).to( { x:x, y:y, z:z}, 1000 ).start();*/
 
-		}
-		function positionTooltip(collisionSphere){
+		},
+		positionTooltip: function(collisionSphere){
 
 			var projector = new THREE.Projector();
 			var v3 = new THREE.Vector3().getPositionFromMatrix(collisionSphere.matrixWorld);
-			var vector = projector.projectVector( v3, camera );
-			vector.x = ( vector.x * windowHalfX ) + windowHalfX;
-			vector.y = - ( vector.y * windowHalfY ) + windowHalfY;
+			var vector = this.projector.projectVector( v3, this.camera );
+			vector.x = ( vector.x * this.windowHalfX ) + this.windowHalfX;
+			vector.y = - ( vector.y * this.windowHalfY ) + this.windowHalfY;
 
 			$("#tooltip").css({"left":vector.x, "top":vector.y});
-		}
+		},
 
+		onDocumentMouseMove: function( event ) {
 
+			this.mouseX = event.clientX - this.windowHalfX;
+			this.mouseY = event.clientY - this.windowHalfY;
 
-		var b2_mouseX, b2_mouseY = 0;
-		var windowHalfX = window.innerWidth / 2;
-		var windowHalfY = window.innerHeight / 2;
-		var mouse = new THREE.Vector2();
-		var mouseX, mouseY = 500 ;
-
-		function onDocumentMouseMove( event ) {
-
-			mouseX = event.clientX - windowHalfX;
-			mouseY = event.clientY - windowHalfY;
-
-			mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-			mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+			this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+			this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
 			var s = 260;
-			b2_mouseX = (( mouseX / window.innerHeight ) + 0.38) * s;
-			b2_mouseY = (( mouseY / window.innerHeight ) + 0.38) * s;
+			this.b2_mouseX = (( this.mouseX / window.innerHeight ) + 0.38) * s;
+			this.b2_mouseY = (( this.mouseY / window.innerHeight ) + 0.38) * s;
 
 			//$("#debug").html("mousex: "+b2_mouseX + " mousey: "+b2_mouseY);
-		}
+		},
 
-		function onDocumentTouchStart( event ) {
-
-			if ( event.touches.length == 1 ) {
-				event.preventDefault();
-				mouseX = event.touches[ 0 ].pageX - windowHalfX;
-				mouseY = event.touches[ 0 ].pageY - windowHalfY;
-			}
-
-		}
-
-		function onDocumentTouchMove( event ) {
+		onDocumentTouchStart: function( event ) {
 
 			if ( event.touches.length == 1 ) {
 				event.preventDefault();
@@ -308,26 +335,70 @@ define(
 				mouseY = event.touches[ 0 ].pageY - windowHalfY;
 			}
 
-		}
+		},
 
-		function onDocumentClick() {
+		onDocumentTouchMove: function( event ) {
 
-			if(INTERSECTED !== null){
-				console.log("clickec: "+INTERSECTED.Sphere.title);
+			if ( event.touches.length == 1 ) {
+				event.preventDefault();
+				mouseX = event.touches[ 0 ].pageX - windowHalfX;
+				mouseY = event.touches[ 0 ].pageY - windowHalfY;
 			}
 
+		},
+
+		onDocumentClick: function() {
+
+			//if(this.INTERSECTED !== null){
+				//console.log("clickec: "+this.INTERSECTED.Sphere.title);
+			//}
+
+		},
+
+		onWindowResize: function() {
+
+			Main.windowHalfX = window.innerWidth / 2;
+			Main.windowHalfY = window.innerHeight / 2;
+			Main.camera.aspect = window.innerWidth / window.innerHeight;
+			Main.camera.updateProjectionMatrix();
+			Main.renderer.setSize( window.innerWidth, window.innerHeight );
+
+		},
+
+		makeBox2dStaticRect: function(x, y, width, height){
+
+			var material_red = new THREE.MeshLambertMaterial({ color: 0xdd0000, overdraw: true });	
+			var floor = new THREE.Mesh( new THREE.PlaneGeometry( width, height ), material_red );
+			this.scene.add( floor );
+			console.log(floor);
+
+			floor.position.x = x;
+			floor.position.y = -y; // position the floor
+			return floor;
+		},
+
+		props:[],
+
+		box2dStuff:function (){
+			console.log("scene");
+
+			this.props.push(this.makeBox2dStaticRect(0, 100, 230, 5));
+			this.props.push(this.makeBox2dStaticRect(-100, 0, 5, 230));
+			this.props.push(this.makeBox2dStaticRect(100, 0, 5, 230));
+		}, 
+
+		clearProps:function (){
+			while(this.props.length > 0){
+				var p = this.props.pop();
+				this.scene.remove(p);
+			}
 		}
 
-		function onWindowResize() {
 
-			windowHalfX = window.innerWidth / 2;
-			windowHalfY = window.innerHeight / 2;
-			camera.aspect = window.innerWidth / window.innerHeight;
-			camera.updateProjectionMatrix();
-			renderer.setSize( window.innerWidth, window.innerHeight );
+    };
 
-		}
+    Main.init();
 
-
-    });
+	//var main = new Main();
+	return Main;
 });

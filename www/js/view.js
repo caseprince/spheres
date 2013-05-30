@@ -13,14 +13,16 @@ define(
 			particle: null,
 			title: null,
 			scene: null,
+			main: null,
 
-			init: function(scene, Spheres){
+			init: function(scene, Spheres, main){
 				this.scene = scene;
-				console.log(this.scene);
+				//console.log(this.scene);
 				this.Spheres = Spheres;
+				this.main = main;
 			},
 			intro: function(){
-				consol.log("intro: "+this.title);
+				console.log("intro: "+this.title);
 			},
 			step: function(){
 

@@ -17,6 +17,7 @@ define(
 			time_last_run: null,
 
 			delta: 0,
+			main:null,
 
 			intro: function(){
 
@@ -32,10 +33,13 @@ define(
 					transitioning = true;
 					this.startTween(i, this.Spheres[i].collisionSphere.position, {x: x, y: y, z: z});
 
+					//this.main.getScene();
+
 				}
-
+			},
+			onTransitionComplete: function(){
 				this.buildBox2dScene();
-
+				this._super();
 			},
 			step: function(){
 				if(!transitioning){
@@ -80,10 +84,12 @@ define(
 						// Nice and simple, we only need to work with 2 dimensions
 						position = object.GetPosition();
 						mesh.position.x = position.x;
-						mesh.position.y = position.y;
+						mesh.position.y = -position.y;
+
+						//console.log(mesh);
 
 						// GetAngle() function returns the rotation in radians
-						//mesh.rotation.z = object.GetAngle();
+						mesh.rotation.z = object.GetAngle();
 					}
 
 					object = object.GetNext(); // Get the next object in the scene
@@ -104,10 +110,12 @@ define(
 					true                  // Allow objects to sleep
 				);
 	
-				var gf = this.makeBox2dStaticRect(0, 100, 300, 5);
+				var gf = this.makeBox2dStaticRect(0, 100, 230, 5);
 				ground = gf.m_body
-				this.makeBox2dStaticRect(-100, 0, 5, 200);
-				this.makeBox2dStaticRect(100, 0, 5, 200);
+				this.makeBox2dStaticRect(-100, 0, 5, 230);
+				this.makeBox2dStaticRect(100, 0, 5, 230);
+
+				this.main.box2dStuff();
 /*
 				//setup debug draw
 				var debugDraw = new b2DebugDraw();
@@ -124,25 +132,61 @@ define(
 				var ambientLight = new THREE.AmbientLight( 0x555555 );
 				scene.add( ambientLight );*/
 
+				for ( var i = 0; i < this.Spheres.length; i++ ) {
+					//box 2d:
+					// Create a fixture definition
+					//  `density` represents kilograms per meter squared.
+					//        a denser object will have greater mass
+					//    `friction` describes the friction between two objects
+					//    `restitution` is how much "bounce" an object will have
+					//        "0.0" is no restitution, "1.0" means the object won't lose velocity
+
+					var Sphere = this.Spheres[i];
+
+					fixDef = new Box2D.Dynamics.b2FixtureDef();
+					var den = Math.round(Sphere.w / ((Sphere.d/2) * (Sphere.d/2) * Math.PI / 1000));
+					fixDef.density = den / 10;
+					//console.log(fixDef.density);
+
+					fixDef.friction = 0.5;
+					fixDef.restitution = 0.55;
+					fixDef.shape = new Box2D.Collision.Shapes.b2CircleShape();
+
+					var d = Sphere.particle.scale.x * 200;
+					fixDef.shape.SetRadius( d );
+
+					var bodyDef = new Box2D.Dynamics.b2BodyDef(); // `bodyDef` will describe the type of bodies we're creating
+					bodyDef.type = Box2D.Dynamics.b2Body.b2_dynamicBody; // balls can move
+					bodyDef.position.y = -Sphere.collisionSphere.position.y + this.debugOffset.y;
+					bodyDef.position.x = Sphere.collisionSphere.position.x + this.debugOffset.x; // Random positon between -20 and 20
+					bodyDef.userData = Sphere.collisionSphere;//collisionSphere; // Keep a reference to `ball`
+					var body = this.world.CreateBody( bodyDef ).CreateFixture( fixDef ); // Add this physics body to the world
+				}
+
 			},
 
-			debugOffset: {x:100, y:100},
+			debugOffset: {x:0, y:0},
 
 			makeBox2dStaticRect: function(x, y, width, height){
 
-				var material_red = new THREE.MeshLambertMaterial({ color: 0xdd0000, overdraw: true });	
-				var floor = new THREE.Mesh( new THREE.PlaneGeometry( width, height ), material_red );
-				this.scene.add( floor );
-				console.log(floor);
+				//var material_red = new THREE.MeshLambertMaterial({ color: 0xdd0000, overdraw: true });	
+				//var floor = new THREE.Mesh( new THREE.PlaneGeometry( width, height ), material_red );
+				//this.main.scene.add( floor );
+				//console.log(floor);
+
+				//floor.position.x = x;
+				//floor.position.y = -y; // position the floor
+
+
+
+				
 
 
 				var bodyDef = new Box2D.Dynamics.b2BodyDef();
 				bodyDef.type = Box2D.Dynamics.b2Body.b2_staticBody; // Objects defined in this function are all static
 				bodyDef.position.x = x + this.debugOffset.x;
 				bodyDef.position.y = y + this.debugOffset.y;
-				floor.position.x = x;
-				floor.position.y = -y; // position the floor
-				// bodyDef.angle = 0;
+				
 
 				var fixDef = new Box2D.Dynamics.b2FixtureDef;
 				fixDef.friction = 1;
