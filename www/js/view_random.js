@@ -1,8 +1,7 @@
 define(
 	[
 		'js/view.js',
-		"js/lib/tween.min.js",
-		"js/lib/three.min.js",
+		"js/lib/tween.min.js"
 	],
 
 	function(view, TWEEN) {

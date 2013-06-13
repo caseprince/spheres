@@ -1,8 +1,7 @@
 define(
 	[
 		'js/view.js',
-		'js/lib/Box2dWeb-2.1.a.3.js',
-		'lib/THREE'
+		'js/lib/Box2dWeb-2.1.a.3.js'
 	],
 
 	function(view, Box2D, THREE) {
@@ -17,8 +16,7 @@ define(
 			time_last_run: null,
 
 			delta: 0,
-			main:null,
-
+			
 			intro: function(){
 
 				var ranScale = 200;

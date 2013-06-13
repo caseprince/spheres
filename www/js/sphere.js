@@ -26,7 +26,7 @@ define(
 				this.position = data.position;
 
 				this.v = this.w / Math.pow(this.d / 2, 3) * (4/3);
-				console.log(this.v);
+				//console.log(this.v);
 
 				//THREE particle
 				this.material = new THREE.ParticleBasicMaterial( { map: THREE.ImageUtils.loadTexture( 'img/400/'+this.src ) } );

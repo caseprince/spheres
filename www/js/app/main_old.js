@@ -9,11 +9,10 @@ define(
 		"js/view_1.js",
 		"js/view_sine.js",
 		"js/view_random.js",
-		"js/view_box2d.js",
-		"js/view_graph.js"
+		"js/view_box2d.js"
 	],
 
-	function($, Class, Sphere, THREE, Stats, TWEEN) {
+	function($, Class, Sphere, THREE, Stats, TWEEN, View_1, View_sine, View_random, View_box2d) {
     //the jquery.alpha.js and jquery.beta.js plugins have been loaded.
    // $(function() {
         //$('body').alpha().beta();
@@ -22,26 +21,19 @@ define(
     var Main = {
 
         camera: null, scene: null, projector: null, raycaster: null, renderer:null, particle: null,
-        INTERSECTED: null, 
-        FOCUSED: null,
+        INTERSECTED: null, FOCUSED: null,
 
         Spheres : [],
         Views : [],
         currentView : 0,
         activeSphere : 0,
-        theta: 0,
-
-
-		b2_mouseX : 0, b2_mouseY : 0,
-		windowHalfX : window.innerWidth / 2,
-		windowHalfY : window.innerHeight / 2,
-		mouse: {x:0, y:0},
-		mouseX: 500, mouseY : 500,
 
         init: function(scene, Spheres){
 	        this.initTHREEjs();
 
-	    	
+	    	this.makeBox2dStaticRect(0, 100, 300, 5);
+			this.makeBox2dStaticRect(-100, 0, 5, 200);
+			this.makeBox2dStaticRect(100, 0, 5, 200);
 
 			var that = this;
 			$.getJSON('spheres.json', function(data) {
@@ -61,9 +53,9 @@ define(
 
 				});
 
-				that.loadViews();
-				
-				
+				that.makeViewMenu();
+				that.Views[that.currentView].intro();
+				that.animate();
 
 			});
 		},
@@ -71,42 +63,16 @@ define(
 		addSphere: function(sphereData){
 			var s = new Sphere(sphereData, this.scene);
 			this.Spheres.push(s);
-
-			//console.log(s);
-		},
-
-		loadViews: function() {
-
-			var that = this;
-			var amd_modules = ['js/view_random.js', 'js/view_1.js', 'js/view_sine.js', 'js/view_box2d.js', 'js/view_graph.js'];
-
-			require(amd_modules, function() {
-				console.log("All modules loaded");
-				// arguments should now be an array of your required modules
-				// in the same order you required them
-				for (i = 0; i < arguments.length; i++) {
-					that.Views.push(new arguments[i](that.scene, that.Spheres, that));
-				}
-
-				that.Views[that.currentView].intro();
-				that.animate();
-
-				that.makeViewMenu();
-
-			});
 		},
 
 		makeViewMenu: function() {
 
-			var that = this;			
+			this.Views.push(new View_random(this.scene, this.Spheres));
+			this.Views.push(new View_1(this.scene, this.Spheres));
+			this.Views.push(new View_sine(this.scene, this.Spheres));
+			this.Views.push(new View_box2d(this.scene, this.Spheres));
 
-			//this.Views.push(new View_random(that.scene, that.Spheres, this));
-			//this.Views.push(new View_1(that.scene, that.Spheres, this));
-			//this.Views.push(new View_sine(that.scene, that.Spheres, this));
-			//this.Views.push(new View_box2d(that.scene, that.Spheres, this));
-			//this.Views.push(new View_graph(that.scene, that.Spheres, this));
-
-			//console.log(this.scene);
+			console.log(this.scene);
 
 			var ul = [];
 			for (i = 0; i < this.Views.length; i++) {
@@ -125,7 +91,7 @@ define(
 
 			$("ul.modes li a").click(function() {
 				//alert($(this).attr("id"));
-				that.showView($(this).attr("id"));
+				showView($(this).attr("id"));
 			});
 
 		}, 
@@ -134,10 +100,8 @@ define(
 
 			$("ul.modes a.active").removeClass("active");
 			$("ul.modes #"+id).addClass("active");
-			this.currentView = id;
-			this.Views[this.currentView].intro();
-
-			this.clearProps();
+			currentView = id;
+			Views[currentView].intro();
 		},
 
 		//console.log("class: "+THREE);
@@ -173,67 +137,56 @@ define(
 			this.stats.domElement.style.bottom = '0px';
 			$('body').append( this.stats.domElement );
 
-			//document.addEventListener( 'mousemove', this.onDocumentMouseMove, false );
-			document.onmousemove = function(event){
-				//alert("Moved! "+event.clientX);
-				Main.onDocumentMouseMove(event);
-			};
-
+			document.addEventListener( 'mousemove', this.onDocumentMouseMove, false );
 			document.addEventListener( 'touchstart', this.onDocumentTouchStart, false );
 			document.addEventListener( 'touchmove', this.onDocumentTouchMove, false );
 			window.addEventListener( 'resize', this.onWindowResize, false );
 
 			document.addEventListener( 'click', this.onDocumentClick, false );
 
-			//this.mouse = new THREE.Vector2();
+			this.mouse = new THREE.Vector2();
 
 		},
 
 		animate: function() {
 			//if(active){
 				var that = this;
-				window.requestAnimationFrame( Main.animate );
+				window.requestAnimationFrame( that.animate );
 
 				//updateDragging();
 				//box2d();
-				//console.log(Main.Views[Main.currentView]);	
+				//console.log(v1);	
 				//v1.step();
-				//if(this.Views[this.currentView].step()){
-					Main.Views[Main.currentView].step();
-				//}
+				Views[currentView].step();
 
-				//console.log(this);
-
-				Main.render();
-				Main.stats.update();
+				render();
+				stats.update();
 				//world.DrawDebugData();
 
 			//}
 		},
 
-		radius : 300, 
-		theta : 0,
+		radius : 300, theta : 0,
 		cameraFocus : {x:0, y:0, z:0},
 
 		render: function() {
 
 			TWEEN.update();
 
-			this.theta += 0.4;
+			theta += 0.4;
 			//camera.position.x = radius * Math.sin( THREE.Math.degToRad( theta ) );
 			//camera.position.y = radius * .5 * Math.sin( THREE.Math.degToRad( theta ) );
 			//camera.position.z = radius * Math.cos( THREE.Math.degToRad( theta ) );
 
-			//$("#debug").html("x"+this.mouseX);
-			if(this.mouseX && this.mouseY){
-				this.camera.position.x += ( 0.5 * this.mouseX - this.camera.position.x ) * 0.05;
-				this.camera.position.y += ( -0.5 * this.mouseY - this.camera.position.y ) * 0.05;
+			if(mouseX && mouseY){
+				camera.position.x += ( 0.5 * mouseX - camera.position.x ) * 0.05;
+				camera.position.y += ( -0.5 * mouseY - camera.position.y ) * 0.05;
 				}
 			//camera.lookAt( scene.position );
-			this.camera.lookAt( this.cameraFocus );
-			this.hitTest();
+			camera.lookAt( cameraFocus );
+			hitTest();
 
-			for ( var i = 0; i < this.Spheres.length; i++ ) {
+			for ( var i = 0; i < Spheres.length; i++ ) {
 
 				/*if(i === 10){
 					//var projector = new THREE.Projector();
@@ -254,58 +207,58 @@ define(
 					//Spheres[i].collisionSphere.scale.x = Spheres[i].collisionSphere.scale.y = 10;
 				}*/
 
-				this.Spheres[i].particle.position = this.Spheres[i].collisionSphere.position;
-				this.Spheres[i].particle.rotation = this.Spheres[i].collisionSphere.rotation;
+				Spheres[i].particle.position = Spheres[i].collisionSphere.position;
+				Spheres[i].particle.rotation = Spheres[i].collisionSphere.rotation;
 				//Spheres[i].particle.position.y = Spheres[i].collisionSphere.position.y;
 				//Spheres[i].particle.position.z = Spheres[i].collisionSphere.position.z;
 				//Spheres[i].particle.scale = Spheres[i].collisionSphere.scale;
 
 			}
 
-			this.renderer.render( this.scene, this.camera );
+			renderer.render( scene, camera );
 
 		},
 
 		hitTest: function(){
 			// find intersections
-			var vector = new THREE.Vector3( this.mouse.x, this.mouse.y, 1 );
-			this.projector.unprojectVector( vector, this.camera );
-			this.raycaster.set( this.camera.position, vector.sub( this.camera.position ).normalize() );
+			var vector = new THREE.Vector3( mouse.x, mouse.y, 1 );
+			projector.unprojectVector( vector, camera );
+			raycaster.set( camera.position, vector.sub( camera.position ).normalize() );
 
 			//var intersects = raycaster.intersectObjects( particles );
-			var intersects = this.raycaster.intersectObjects( this.scene.children );
+			var intersects = raycaster.intersectObjects( scene.children );
 
 			if ( intersects.length > 0 ) {
 				//console.log(intersects[0].object.id);
-				if ( this.INTERSECTED != intersects[ 0 ].object ) {
-					if(this.INTERSECTED !== null){
+				if ( INTERSECTED != intersects[ 0 ].object ) {
+					if(INTERSECTED !== null){
 						$("ul.spheres a").removeClass("active");
 						//INTERSECTED.visible = false;
 					}
-					this.INTERSECTED = intersects[0].object;
+					INTERSECTED = intersects[0].object;
 
-					if ( this.INTERSECTED && this.INTERSECTED.Sphere ){
+					if ( INTERSECTED && INTERSECTED.Sphere ){
 						//console.log(INTERSECTED.data);
 						//INTERSECTED.visible = true;
 
-						$("ul.spheres a#"+this.INTERSECTED.Sphere.id).addClass("active");
+						$("ul.spheres a#"+INTERSECTED.Sphere.id).addClass("active");
 
-						this.showTooltip(this.INTERSECTED);
-						this.FOCUSED = this.INTERSECTED;
+						showTooltip(INTERSECTED);
+						FOCUSED = INTERSECTED;
 					}
 				}
 			} else {
 
-				if(this.INTERSECTED !== null){
+				if(INTERSECTED !== null){
 					//INTERSECTED.visible = false;
 					$("ul.spheres a").removeClass("active");
-					this.INTERSECTED = null;
+					INTERSECTED = null;
 					//console.log("null");
 				}
 			}
 
-			if(this.FOCUSED){
-				this.positionTooltip(this.FOCUSED);
+			if(FOCUSED){
+				positionTooltip(FOCUSED);
 			}
 		},
 
@@ -316,7 +269,7 @@ define(
 			$("#tooltip").html(collisionSphere.Sphere.title);
 			$("#tooltip").css({"display": "block"});
 
-			this.positionTooltip(collisionSphere);
+			positionTooltip(collisionSphere);
 
 			/*var x = collisionSphere.position.x;
 			var y = collisionSphere.position.y;
@@ -328,24 +281,32 @@ define(
 
 			var projector = new THREE.Projector();
 			var v3 = new THREE.Vector3().getPositionFromMatrix(collisionSphere.matrixWorld);
-			var vector = this.projector.projectVector( v3, this.camera );
+			var vector = projector.projectVector( v3, camera );
 			vector.x = ( vector.x * this.windowHalfX ) + this.windowHalfX;
 			vector.y = - ( vector.y * this.windowHalfY ) + this.windowHalfY;
 
 			$("#tooltip").css({"left":vector.x, "top":vector.y});
 		},
 
+
+
+		b2_mouseX : 0, b2_mouseY : 0,
+		windowHalfX : window.innerWidth / 2,
+		windowHalfY : window.innerHeight / 2,
+		mouse : new THREE.Vector2(),
+		mouseX: 500, mouseY : 500,
+
 		onDocumentMouseMove: function( event ) {
 
-			this.mouseX = event.clientX - this.windowHalfX;
-			this.mouseY = event.clientY - this.windowHalfY;
+			mouseX = event.clientX - this.windowHalfX;
+			mouseY = event.clientY - this.windowHalfY;
 
 			this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
 			this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
 
 			var s = 260;
-			this.b2_mouseX = (( this.mouseX / window.innerHeight ) + 0.38) * s;
-			this.b2_mouseY = (( this.mouseY / window.innerHeight ) + 0.38) * s;
+			b2_mouseX = (( mouseX / window.innerHeight ) + 0.38) * s;
+			b2_mouseY = (( mouseY / window.innerHeight ) + 0.38) * s;
 
 			//$("#debug").html("mousex: "+b2_mouseX + " mousey: "+b2_mouseY);
 		},
@@ -372,70 +333,21 @@ define(
 
 		onDocumentClick: function() {
 
-			//if(this.INTERSECTED !== null){
-				//console.log("clickec: "+this.INTERSECTED.Sphere.title);
-			//}
+			if(INTERSECTED !== null){
+				console.log("clickec: "+INTERSECTED.Sphere.title);
+			}
 
 		},
 
 		onWindowResize: function() {
 
-			Main.windowHalfX = window.innerWidth / 2;
-			Main.windowHalfY = window.innerHeight / 2;
-			Main.camera.aspect = window.innerWidth / window.innerHeight;
-			Main.camera.updateProjectionMatrix();
-			Main.renderer.setSize( window.innerWidth, window.innerHeight );
+			windowHalfX = window.innerWidth / 2;
+			windowHalfY = window.innerHeight / 2;
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+			renderer.setSize( window.innerWidth, window.innerHeight );
 
 		},
-
-		add3dText: function(options) {
-
-			/////// draw text on canvas /////////
-
-			var div = document.createElement('div');
-
-			var canvas1 = document.createElement('canvas');
-			canvas1.width = 500;//div.clientWidth;
-			canvas1.height = 50;//div.clientHeight;
-			var context1 = canvas1.getContext('2d');
-			context1.font = "Bold 35px Arial";
-
-			context1.fillStyle = "rgba(100,100,100,0.15)";
-			context1.fillRect (0,0,canvas1.width,canvas1.height);
-
-			context1.fillStyle = "rgba(255, 255, 255, 1)";
-			context1.fillText(options.text, 0, 40);
-
-
-			// canvas contents will be used for a texture
-			var texture1 = new THREE.Texture(canvas1) ;
-			texture1.needsUpdate = true;
-
-			var material1 = new THREE.MeshLambertMaterial( {map: texture1, color: 0xdd0000, side:THREE.DoubleSide } );
-			//material1.transparent = true;
-
-			var material_red = new THREE.MeshLambertMaterial({ color: 0xdd0000, overdraw: true });
-
-			var mesh1 = new THREE.Mesh(
-				new THREE.PlaneGeometry(canvas1.width, canvas1.height, 5, 1), material1
-			);
-			var scale = 0.2;
-			mesh1.scale.set(scale, scale, scale);
-
-			options.position.x += canvas1.width * 0.5 * scale;
-			options.position.y -= canvas1.height * 0.5 * scale;
-
-			mesh1.position.set(options.position.x,options.position.y,options.position.z);
-
-			if(options.rotation){
-				mesh1.rotation.set(options.rotation.x,options.rotation.y,options.rotation.z);
-			}
-
-			this.scene.add( mesh1 );
-			this.props.push( mesh1 );
-
-		},
-
 
 		makeBox2dStaticRect: function(x, y, width, height){
 
@@ -445,25 +357,12 @@ define(
 			console.log(floor);
 
 			floor.position.x = x;
-			floor.position.y = -y; // position the floor
-			return floor;
+				floor.position.y = -y; // position the floor
+
 		},
 
-		props:[],
-
-		box2dStuff:function (){
-			console.log("scene");
-
-			this.props.push(this.makeBox2dStaticRect(0, 100, 230, 5));
-			this.props.push(this.makeBox2dStaticRect(-100, 0, 5, 230));
-			this.props.push(this.makeBox2dStaticRect(100, 0, 5, 230));
-		}, 
-
-		clearProps:function (){
-			while(this.props.length > 0){
-				var p = this.props.pop();
-				this.scene.remove(p);
-			}
+		getScene:function (){
+			console.log("ok");
 		}
 
 
