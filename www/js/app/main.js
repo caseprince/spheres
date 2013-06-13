@@ -6,13 +6,9 @@ define(
 		"three",
 		"js/lib/stats.min.js",
 		"js/lib/tween.min.js",
-		"js/view_1.js",
-		"js/view_sine.js",
-		"js/view_random.js",
-		"js/view_box2d.js"
 	],
 
-	function($, Class, Sphere, THREE, Stats, TWEEN, View_1, View_sine, View_random, View_box2d) {
+	function($, Class, Sphere, THREE, Stats, TWEEN) {
     //the jquery.alpha.js and jquery.beta.js plugins have been loaded.
    // $(function() {
         //$('body').alpha().beta();
@@ -60,9 +56,9 @@ define(
 
 				});
 
-				that.makeViewMenu();
-				that.Views[that.currentView].intro();
-				that.animate();
+				that.loadViews();
+				
+				
 
 			});
 		},
@@ -71,19 +67,41 @@ define(
 			var s = new Sphere(sphereData, this.scene);
 			this.Spheres.push(s);
 
-			console.log(s);
+			//console.log(s);
+		},
+
+		loadViews: function() {
+
+			var that = this;
+			var amd_modules = ['js/view_random.js', 'js/view_1.js', 'js/view_sine.js', 'js/view_box2d.js', 'js/view_graph.js'];
+
+			require(amd_modules, function() {
+				console.log("All modules loaded");
+				// arguments should now be an array of your required modules
+				// in the same order you required them
+				for (i = 0; i < arguments.length; i++) {
+					that.Views.push(new arguments[i](that.scene, that.Spheres, that));
+				}
+
+				that.Views[that.currentView].intro();
+				that.animate();
+
+				that.makeViewMenu();
+
+			});
 		},
 
 		makeViewMenu: function() {
 
-			var that = this;
+			var that = this;			
 
-			this.Views.push(new View_random(that.scene, that.Spheres, this));
-			this.Views.push(new View_1(that.scene, that.Spheres, this));
-			this.Views.push(new View_sine(that.scene, that.Spheres, this));
-			this.Views.push(new View_box2d(that.scene, that.Spheres, this));
+			//this.Views.push(new View_random(that.scene, that.Spheres, this));
+			//this.Views.push(new View_1(that.scene, that.Spheres, this));
+			//this.Views.push(new View_sine(that.scene, that.Spheres, this));
+			//this.Views.push(new View_box2d(that.scene, that.Spheres, this));
+			//this.Views.push(new View_graph(that.scene, that.Spheres, this));
 
-			console.log(this.scene);
+			//console.log(this.scene);
 
 			var ul = [];
 			for (i = 0; i < this.Views.length; i++) {
