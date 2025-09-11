@@ -1,6 +1,6 @@
 # Spheres
 
-This is most of my sphere collection. The interface is a learning exercise & experiment in JavaScript modularity, inheritance, 3d & particle rendering and physics. The project can be viewed here: <https://caseprince.github.io/spheres/>
+This is part of my sphere collection. The interface is a learning exercise & experiment in JavaScript modularity, inheritance, 3d & particle rendering and physics. The project can be viewed here: <https://caseprince.github.io/spheres/>
 
 ## Building
 
